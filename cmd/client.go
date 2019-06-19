@@ -9,7 +9,7 @@ func init(){
 }
 
 var clientCmd = &cobra.Command{
-	Use:   "serve",
+	Use:   "client",
 	Run: func(cmd *cobra.Command, args []string) {
 		//ctx := context.Background()
 		//s, _ := NewClient()

@@ -9,24 +9,23 @@ import (
 
 	"google.golang.org/grpc"
 
+	"github.com/spf13/cobra"
 	"github.com/taoruicui/hello-grpc/pkg/api/v1"
 	v1Svc "github.com/taoruicui/hello-grpc/pkg/service/v1"
-	"github.com/spf13/cobra"
 )
 
-func init(){
+func init() {
 	rootCmd.AddCommand(serveCmd)
 }
 
 var serveCmd = &cobra.Command{
-	Use:   "serve",
+	Use: "server",
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
 		s, _ := NewServer()
 		Run(ctx, s, "8888")
 	},
 }
-
 
 func NewServer() (v1.HelloServiceServer, error) {
 	return v1Svc.NewHelloServer(), nil
@@ -61,4 +60,3 @@ func Run(ctx context.Context, helloServer v1.HelloServiceServer, port string) er
 	log.Println("starting gRPC server...")
 	return server.Serve(listen)
 }
-
