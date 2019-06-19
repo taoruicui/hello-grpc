@@ -1,0 +1,28 @@
+syntax = "proto3";
+package v1;
+option go_package = "v1";
+
+import "google/protobuf/timestamp.proto";
+
+message Hello {
+    int64 id = 1;
+    message Message {
+        string content = 2;
+        string author = 3;
+        google.protobuf.Timestamp create_at = 4;
+    }
+}
+
+message HelloRequest {
+    string api = 1;
+    Hello hello = 2;
+}
+
+message HelloResponse {
+    string api = 1;
+    int64 id = 2;
+}
+
+service HelloService {
+    rpc Create(HelloRequest) returns (HelloResponse);
+}
