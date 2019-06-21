@@ -1,4 +1,4 @@
-DOCKER_RUN=docker run -w /root/protobuf -v `pwd`:/root/protobuf proto:test
+DOCKER_RUN=docker run -w /root/protobuf -v `pwd`:/root/protobuf 951896542015.dkr.ecr.us-west-1.amazonaws.com/tools/base-image:protobuf 
 
 PROTO_FILES := $(shell find api -type f -iname "*.proto")
 
