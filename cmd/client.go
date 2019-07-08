@@ -38,14 +38,15 @@ func RunClient() {
 	defer cancel()
 
 	// create request
-	createReq := v1.HelloRequest{
+	createReq := v1.ProductRequest{
 		Api: "v1",
-		Hello: &v1.Hello{
-			Id: 2,
-			Content: &v1.Hello_Message{
-				Content:   "hello",
-				Numbers:   []int64{1, 2, 3, 4, 5},
-				CreatedAt: ptypes.TimestampNow(),
+		Product: &v1.Product{
+			Id: 1,
+			Price: &v1.Product_Price{
+				Name:       "product 1",
+				Unit:       v1.Product_Price_CNY,
+				Number:     12.32,
+				UploadedAt: ptypes.TimestampNow(),
 			},
 		},
 	}
@@ -58,9 +59,9 @@ func RunClient() {
 	log.Println(res)
 
 	// read request
-	readReq := v1.HelloRequest{
+	readReq := v1.ProductRequest{
 		Api: "v1",
-		Hello: &v1.Hello{
+		Product: &v1.Product{
 			Id: 1,
 		},
 	}
@@ -73,14 +74,14 @@ func RunClient() {
 	log.Println(proto.MarshalTextString(resHello))
 
 	// update request
-	updateReq := v1.HelloRequest{
+	updateReq := v1.ProductRequest{
 		Api: "v1",
-		Hello: &v1.Hello{
+		Product: &v1.Product{
 			Id: 1,
-			Content: &v1.Hello_Message{
-				Content:   "hello modified",
-				Numbers:   []int64{1, 2, 3, 4, 5},
-				CreatedAt: ptypes.TimestampNow(),
+			Price: &v1.Product_Price{
+				Unit:       v1.Product_Price_USD,
+				Number:     2.01,
+				UpdatedAt: ptypes.TimestampNow(),
 			},
 		},
 	}
@@ -92,19 +93,40 @@ func RunClient() {
 
 	log.Println(res)
 
-	//// delete request
-	//deleteReq := v1.HelloRequest{
-	//	Api: "v1",
-	//	Hello: &v1.Hello{
-	//		Id: 1,
-	//	},
-	//}
-	//
-	//res, err = c.Delete(ctx, &deleteReq)
-	//if err != nil {
-	//	log.Fatalf("delete failed: %v", err)
-	//}
-	//
-	//log.Println(res)
+	// create request
+	createReq = v1.ProductRequest{
+		Api: "v1",
+		Product: &v1.Product{
+			Id: 2,
+			Price: &v1.Product_Price{
+				Name:       "product 2",
+				Unit:       v1.Product_Price_YEN,
+				Number:     100,
+				UploadedAt: ptypes.TimestampNow(),
+			},
+		},
+	}
+
+	res, err = c.Create(ctx, &createReq)
+	if err != nil {
+		log.Fatalf("Create failed: %v", err)
+	}
+
+	log.Println(res)
+
+	// delete request
+	deleteReq := v1.ProductRequest{
+		Api: "v1",
+		Product: &v1.Product{
+			Id: 2,
+		},
+	}
+
+	res, err = c.Delete(ctx, &deleteReq)
+	if err != nil {
+		log.Fatalf("delete failed: %v", err)
+	}
+
+	log.Println(res)
 
 }

@@ -4,57 +4,65 @@ package v1;
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 
-message Hello {
+message Product {
     int64 id = 1;
-    message Message {
-        string content = 1;
-        repeated int64 numbers = 2;
-        google.protobuf.Timestamp created_at = 3;
+
+    message Price {
+
+        string name = 1;
+        enum Unit {
+            USD = 0;
+            CNY = 1;
+            YEN = 2;
+        }
+        Unit unit = 5;
+        double number = 2;
+        google.protobuf.Timestamp uploaded_at = 3;
         google.protobuf.Timestamp updated_at = 4;
     }
-    Message content = 2;
+    Price price = 2;
 }
 
-message Hellos {
-    repeated Hello hellos = 1;
+message Products {
+    repeated Product products = 1;
 }
 
-message HelloRequest {
+message ProductRequest {
     string api = 1;
-    Hello hello = 2;
+    Product product = 2;
 }
 
-message HelloResponse {
+message ProductResponse {
     string api = 1;
     int64 id = 2;
 }
 
 service HelloService {
-    rpc Create(HelloRequest) returns (HelloResponse){
+    rpc Create(ProductRequest) returns (ProductResponse){
         option (google.api.http) = {
           post: "/v1/create"
           body: "*"
         };
     }
-    rpc ReadAll(HelloRequest) returns (Hellos) {
+    rpc ReadAll(ProductRequest) returns (Products) {
         option (google.api.http) = {
             get: "/v1/get"
         };
     }
-    rpc Read(HelloRequest) returns (Hello){
+    rpc Read(ProductRequest) returns (Product){
         option (google.api.http) = {
-            get: "/v1/get/{hello.id}"
+            get: "/v1/get/{product.id}"
         };
     }
-    rpc Update(HelloRequest) returns (HelloResponse) {
+    rpc Update(ProductRequest) returns (ProductResponse) {
         option (google.api.http) = {
-            put: "/v1/get/{hello.id}"
+            put: "/v1/get/{product.id}"
             body: "*"
         };
     };
-    rpc Delete(HelloRequest) returns (HelloResponse) {
+    rpc Delete(ProductRequest) returns (ProductResponse) {
         option (google.api.http) = {
-            delete: "/v1/get/{hello.id}"
+            delete: "/v1/get/{product.id}"
         };
     };
 }
