@@ -2,6 +2,7 @@ syntax = "proto3";
 package v1;
 
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
 message Hello {
     int64 id = 1;
@@ -12,6 +13,10 @@ message Hello {
         google.protobuf.Timestamp updated_at = 4;
     }
     Message content = 2;
+}
+
+message Hellos {
+    repeated Hello hellos = 1;
 }
 
 message HelloRequest {
@@ -25,8 +30,31 @@ message HelloResponse {
 }
 
 service HelloService {
-    rpc Create(HelloRequest) returns (HelloResponse);
-    rpc Read(HelloRequest) returns (Hello);
-    rpc Update(HelloRequest) returns (HelloResponse);
-    rpc Delete(HelloRequest) returns (HelloResponse);
+    rpc Create(HelloRequest) returns (HelloResponse){
+        option (google.api.http) = {
+          post: "/v1/create"
+          body: "*"
+        };
+    }
+    rpc ReadAll(HelloRequest) returns (Hellos) {
+        option (google.api.http) = {
+            get: "/v1/get"
+        };
+    }
+    rpc Read(HelloRequest) returns (Hello){
+        option (google.api.http) = {
+            get: "/v1/get/{hello.id}"
+        };
+    }
+    rpc Update(HelloRequest) returns (HelloResponse) {
+        option (google.api.http) = {
+            put: "/v1/get/{hello.id}"
+            body: "*"
+        };
+    };
+    rpc Delete(HelloRequest) returns (HelloResponse) {
+        option (google.api.http) = {
+            delete: "/v1/get/{hello.id}"
+        };
+    };
 }

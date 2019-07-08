@@ -26,7 +26,7 @@ var clientCmd = &cobra.Command{
 
 func RunClient() {
 
-	conn, err := grpc.Dial("localhost:8888", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:8887", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
@@ -41,7 +41,7 @@ func RunClient() {
 	createReq := v1.HelloRequest{
 		Api: "v1",
 		Hello: &v1.Hello{
-			Id: 1,
+			Id: 2,
 			Content: &v1.Hello_Message{
 				Content:   "hello",
 				Numbers:   []int64{1, 2, 3, 4, 5},
@@ -92,19 +92,19 @@ func RunClient() {
 
 	log.Println(res)
 
-	// delete request
-	deleteReq := v1.HelloRequest{
-		Api: "v1",
-		Hello: &v1.Hello{
-			Id: 1,
-		},
-	}
-
-	res, err = c.Update(ctx, &deleteReq)
-	if err != nil {
-		log.Fatalf("delete failed: %v", err)
-	}
-
-	log.Println(res)
+	//// delete request
+	//deleteReq := v1.HelloRequest{
+	//	Api: "v1",
+	//	Hello: &v1.Hello{
+	//		Id: 1,
+	//	},
+	//}
+	//
+	//res, err = c.Delete(ctx, &deleteReq)
+	//if err != nil {
+	//	log.Fatalf("delete failed: %v", err)
+	//}
+	//
+	//log.Println(res)
 
 }

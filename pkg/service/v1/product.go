@@ -11,14 +11,10 @@ var (
 	hellos = make(map[int64]*v1.Hello)
 )
 
-type HelloServer struct {
+type ServiceServer struct {
 }
 
-func NewHelloServer() v1.HelloServiceServer {
-	return &HelloServer{}
-}
-
-func (hs *HelloServer) Create(ctx context.Context, req *v1.HelloRequest) (*v1.HelloResponse, error) {
+func (hs *ServiceServer) Create(ctx context.Context, req *v1.HelloRequest) (*v1.HelloResponse, error) {
 
 	hellos[req.Hello.Id] = req.Hello
 
@@ -29,8 +25,7 @@ func (hs *HelloServer) Create(ctx context.Context, req *v1.HelloRequest) (*v1.He
 
 }
 
-func (hs *HelloServer) Read(ctx context.Context, req *v1.HelloRequest) (*v1.Hello, error) {
-
+func (hs *ServiceServer) Read(ctx context.Context, req *v1.HelloRequest) (*v1.Hello, error) {
 	hello, ok := hellos[req.Hello.Id]
 	if !ok {
 		return nil, errors.Errorf("requested Hello not found given Id: %d", req.Hello.Id)
@@ -39,7 +34,7 @@ func (hs *HelloServer) Read(ctx context.Context, req *v1.HelloRequest) (*v1.Hell
 	return hello, nil
 }
 
-func (hs *HelloServer) Update(ctx context.Context, req *v1.HelloRequest) (*v1.HelloResponse, error) {
+func (hs *ServiceServer) Update(ctx context.Context, req *v1.HelloRequest) (*v1.HelloResponse, error) {
 
 	hellos[req.Hello.Id] = req.Hello
 
@@ -49,7 +44,7 @@ func (hs *HelloServer) Update(ctx context.Context, req *v1.HelloRequest) (*v1.He
 	}, nil
 }
 
-func (hs *HelloServer) Delete(ctx context.Context, req *v1.HelloRequest) (*v1.HelloResponse, error) {
+func (hs *ServiceServer) Delete(ctx context.Context, req *v1.HelloRequest) (*v1.HelloResponse, error) {
 
 	delete(hellos, req.Hello.Id)
 
@@ -57,4 +52,12 @@ func (hs *HelloServer) Delete(ctx context.Context, req *v1.HelloRequest) (*v1.He
 		Api: "v1",
 		Id:  req.Hello.Id,
 	}, nil
+}
+
+func (hs *ServiceServer) ReadAll(ctx context.Context, req *v1.HelloRequest) (*v1.Hellos, error) {
+	res := []*v1.Hello{}
+	for _, v := range hellos {
+		res = append(res, v)
+	}
+	return &v1.Hellos{Hellos: res}, nil
 }
