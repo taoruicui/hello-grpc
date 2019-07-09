@@ -1,0 +1,42 @@
+syntax = "proto3";
+package v1;
+
+import "google/api/annotations.proto";
+
+message StreamDataRequest {
+    string api = 1;
+    StreamData streamData = 2;
+}
+
+message StreamData {
+    int64 id = 1;
+    double value = 2;
+}
+
+message StreamDataResponse {
+    string api = 1;
+    StreamData streamData = 2;
+}
+
+service HelloStreamService {
+    rpc BiDirectStream(stream StreamDataRequest) returns (stream StreamDataResponse){
+        option (google.api.http) = {
+          post: "/v1/stream/bidirect"
+          body: "*"
+        };
+    }
+
+    rpc ClientStream(stream StreamDataRequest) returns (StreamDataResponse) {
+        option (google.api.http) = {
+          post: "/v1/stream/client"
+          body: "*"
+        };
+    }
+
+    rpc ServerStream(StreamDataRequest) returns (stream StreamDataResponse) {
+        option (google.api.http) = {
+          post: "/v1/stream/server"
+          body: "*"
+        };
+    }
+}

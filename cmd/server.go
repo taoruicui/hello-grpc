@@ -22,9 +22,16 @@ var serveCmd = &cobra.Command{
 
 		s := server.DefaultServer()
 		api.RegisterHelloServiceServer(s.GrpcServer, &svc.ServiceServer{})
+		api.RegisterHelloStreamServiceServer(s.GrpcServer, &svc.HelloStreamService{})
 
 		mux := runtime.NewServeMux()
 		err := api.RegisterHelloServiceHandlerFromEndpoint(s.Context, mux, fmt.Sprintf("localhost:%d", s.Port), []grpc.DialOption{grpc.WithInsecure()})
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		err = api.RegisterHelloStreamServiceHandlerFromEndpoint(s.Context, mux, fmt.Sprintf("localhost:%d", s.Port), []grpc.DialOption{grpc.WithInsecure()})
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)

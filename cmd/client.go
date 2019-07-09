@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"io"
 	"log"
 
 	"time"
@@ -15,6 +16,7 @@ import (
 
 func init() {
 	rootCmd.AddCommand(clientCmd)
+	clientCmd.AddCommand(streamCmd)
 }
 
 var clientCmd = &cobra.Command{
@@ -79,8 +81,8 @@ func RunClient() {
 		Product: &v1.Product{
 			Id: 1,
 			Price: &v1.Product_Price{
-				Unit:       v1.Product_Price_USD,
-				Number:     2.01,
+				Unit:      v1.Product_Price_USD,
+				Number:    2.01,
 				UpdatedAt: ptypes.TimestampNow(),
 			},
 		},
@@ -129,4 +131,133 @@ func RunClient() {
 
 	log.Println(res)
 
+}
+
+var streamCmd = &cobra.Command{
+	Use: "stream",
+	Run: func(cmd *cobra.Command, args []string) {
+		mode := args[0]
+		if mode == "bi" {
+			RunBiSteam()
+		} else if mode == "client" {
+			RunClientStream()
+		} else {
+			RunServerStream()
+		}
+	},
+}
+
+func RunServerStream() {
+	conn, err := grpc.Dial("localhost:8887", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+
+	c := v1.NewHelloStreamServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	serverStream, err := c.ServerStream(ctx, &v1.StreamDataRequest{
+		Api: "v1",
+		StreamData: &v1.StreamData{
+			Id: 1,
+		},
+	})
+	if err != nil {
+		log.Fatalf("Send failed: %v", err)
+	}
+
+	for {
+		res, err := serverStream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println(res)
+	}
+
+}
+
+func RunClientStream() {
+
+	conn, err := grpc.Dial("localhost:8887", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+
+	c := v1.NewHelloStreamServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	clientStream, err := c.ClientStream(ctx)
+	if err != nil {
+		log.Fatalf("%v.clientStream(_) = _, %v", clientStream, err)
+	}
+	for i := 0; i < 100; i++ {
+		if err := clientStream.Send(&v1.StreamDataRequest{
+			Api: "v1",
+			StreamData: &v1.StreamData{
+				Id:    int64(i),
+				Value: float64(i),
+			},
+		}); err != nil {
+			log.Fatalf("%v.Send = %v", clientStream, err)
+		}
+	}
+
+	reply, err := clientStream.CloseAndRecv()
+	if err == nil {
+		log.Printf("clientStream summary: %v", reply)
+	} else {
+		log.Fatalf("%v.CloseAndRecv() got error %v, want %v", clientStream, err, nil)
+	}
+}
+
+func RunBiSteam() {
+	conn, err := grpc.Dial("localhost:8887", grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	defer conn.Close()
+
+	c := v1.NewHelloStreamServiceClient(conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	biStream, err := c.BiDirectStream(ctx)
+	if err != nil {
+		log.Fatalf("%v.biStream(_) = _, %v", biStream, err)
+	}
+
+	go func(stream v1.HelloStreamService_BiDirectStreamClient) {
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				log.Fatal(err)
+			}
+			log.Println(res)
+		}
+	}(biStream)
+
+	for i := 0; i < 100; i++ {
+		if err := biStream.Send(&v1.StreamDataRequest{
+			Api: "v1",
+			StreamData: &v1.StreamData{
+				Id:    int64(i),
+				Value: float64(i),
+			},
+		}); err != nil {
+			log.Fatalf("%v.Send = %v", biStream, err)
+		}
+	}
 }
