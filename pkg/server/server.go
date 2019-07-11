@@ -13,6 +13,8 @@ import (
 
 	"net/http"
 
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
@@ -25,7 +27,7 @@ type Server struct {
 }
 
 func NewServer() *Server {
-	// TODO new server from config
+	// TODO new server from configs and CLI flags
 	return &Server{
 		GrpcServer: grpc.NewServer(),
 		Context:    context.Background(),
@@ -42,10 +44,6 @@ func DefaultServer() *Server {
 		Context: context.Background(),
 		Port:    8887,
 	}
-}
-
-func (s *Server) Init() {
-
 }
 
 func (s *Server) Run() error {
@@ -98,4 +96,23 @@ func (s *Server) Stop() {
 
 	log.Info("Server is down")
 
+}
+
+func (s *Server) Register(gwmux *runtime.ServeMux, fn ...func(next http.Handler) http.Handler) {
+
+	mux := http.NewServeMux()
+
+	mux.Handle("/", buildChain(gwmux, fn))
+	mux.Handle("/metrics", promhttp.Handler())
+
+	s.HttpServer.Handler = mux
+}
+
+func buildChain(f http.Handler, m []func(next http.Handler) http.Handler) http.Handler {
+	// if our chain is done, use the original handlerfunc
+	if len(m) == 0 {
+		return f
+	}
+	// otherwise nest the handlerfuncs
+	return m[0](buildChain(f, m[1:]))
 }

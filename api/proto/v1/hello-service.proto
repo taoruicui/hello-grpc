@@ -38,29 +38,30 @@ message ProductResponse {
 }
 
 service HelloService {
-    rpc Create(ProductRequest) returns (ProductResponse){
+
+    rpc CreateProduct(ProductRequest) returns (ProductResponse){
         option (google.api.http) = {
           post: "/v1/create"
           body: "*"
         };
     }
-    rpc ReadAll(ProductRequest) returns (Products) {
+    rpc ReadAllProducts(ProductRequest) returns (Products) {
         option (google.api.http) = {
             get: "/v1/get"
         };
     }
-    rpc Read(ProductRequest) returns (Product){
+    rpc ReadProduct(ProductRequest) returns (Product){
         option (google.api.http) = {
             get: "/v1/get/{product.id}"
         };
     }
-    rpc Update(ProductRequest) returns (ProductResponse) {
+    rpc UpdateProduct(ProductRequest) returns (ProductResponse) {
         option (google.api.http) = {
             put: "/v1/get/{product.id}"
             body: "*"
         };
     };
-    rpc Delete(ProductRequest) returns (ProductResponse) {
+    rpc DeleteProduct(ProductRequest) returns (ProductResponse) {
         option (google.api.http) = {
             delete: "/v1/get/{product.id}"
         };

@@ -21,24 +21,26 @@ var serveCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		s := server.DefaultServer()
+
+		// register rpc services
 		api.RegisterHelloServiceServer(s.GrpcServer, &svc.ServiceServer{})
 		api.RegisterHelloStreamServiceServer(s.GrpcServer, &svc.HelloStreamService{})
 
-		mux := runtime.NewServeMux()
-		err := api.RegisterHelloServiceHandlerFromEndpoint(s.Context, mux, fmt.Sprintf("localhost:%d", s.Port), []grpc.DialOption{grpc.WithInsecure()})
+		// register gateway for http endpoints
+		gwMux := runtime.NewServeMux()
+		err := api.RegisterHelloServiceHandlerFromEndpoint(s.Context, gwMux, fmt.Sprintf("localhost:%d", s.Port), []grpc.DialOption{grpc.WithInsecure()})
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
-		err = api.RegisterHelloStreamServiceHandlerFromEndpoint(s.Context, mux, fmt.Sprintf("localhost:%d", s.Port), []grpc.DialOption{grpc.WithInsecure()})
+		err = api.RegisterHelloStreamServiceHandlerFromEndpoint(s.Context, gwMux, fmt.Sprintf("localhost:%d", s.Port), []grpc.DialOption{grpc.WithInsecure()})
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
+		s.Register(gwMux)
 
-		s.HttpServer.Handler = mux
-
+		// start server
 		err = s.Run()
 		if err != nil {
 			fmt.Println(err)

@@ -53,7 +53,7 @@ func RunClient() {
 		},
 	}
 
-	res, err := c.Create(ctx, &createReq)
+	res, err := c.CreateProduct(ctx, &createReq)
 	if err != nil {
 		log.Fatalf("Create failed: %v", err)
 	}
@@ -68,7 +68,7 @@ func RunClient() {
 		},
 	}
 
-	resHello, err := c.Read(ctx, &readReq)
+	resHello, err := c.ReadProduct(ctx, &readReq)
 	if err != nil {
 		log.Fatalf("Read failed: %v", err)
 	}
@@ -88,7 +88,7 @@ func RunClient() {
 		},
 	}
 
-	res, err = c.Update(ctx, &updateReq)
+	res, err = c.UpdateProduct(ctx, &updateReq)
 	if err != nil {
 		log.Fatalf("update failed: %v", err)
 	}
@@ -109,7 +109,7 @@ func RunClient() {
 		},
 	}
 
-	res, err = c.Create(ctx, &createReq)
+	res, err = c.CreateProduct(ctx, &createReq)
 	if err != nil {
 		log.Fatalf("Create failed: %v", err)
 	}
@@ -124,7 +124,7 @@ func RunClient() {
 		},
 	}
 
-	res, err = c.Delete(ctx, &deleteReq)
+	res, err = c.DeleteProduct(ctx, &deleteReq)
 	if err != nil {
 		log.Fatalf("delete failed: %v", err)
 	}
