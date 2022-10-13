@@ -1,0 +1,364 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "v1/hello-service.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/create": {
+      "post": {
+        "operationId": "CreateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ProductResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HelloService"
+        ]
+      }
+    },
+    "/v1/get": {
+      "get": {
+        "operationId": "ReadAllProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Products"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "api",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "product.id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "product.price.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "product.price.unit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "USD",
+              "CNY",
+              "YEN"
+            ],
+            "default": "USD"
+          },
+          {
+            "name": "product.price.number",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "product.price.uploaded_at",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "product.price.updated_at",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "HelloService"
+        ]
+      }
+    },
+    "/v1/get/{product.id}": {
+      "get": {
+        "operationId": "ReadProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Product"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "product.id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "api",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "product.price.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "product.price.unit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "USD",
+              "CNY",
+              "YEN"
+            ],
+            "default": "USD"
+          },
+          {
+            "name": "product.price.number",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "product.price.uploaded_at",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "product.price.updated_at",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "HelloService"
+        ]
+      },
+      "delete": {
+        "operationId": "DeleteProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ProductResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "product.id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "api",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "product.price.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "product.price.unit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "USD",
+              "CNY",
+              "YEN"
+            ],
+            "default": "USD"
+          },
+          {
+            "name": "product.price.number",
+            "in": "query",
+            "required": false,
+            "type": "number",
+            "format": "double"
+          },
+          {
+            "name": "product.price.uploaded_at",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "product.price.updated_at",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "HelloService"
+        ]
+      },
+      "put": {
+        "operationId": "UpdateProduct",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ProductResponse"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "product.id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ProductRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HelloService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "PriceUnit": {
+      "type": "string",
+      "enum": [
+        "USD",
+        "CNY",
+        "YEN"
+      ],
+      "default": "USD"
+    },
+    "ProductPrice": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "unit": {
+          "$ref": "#/definitions/PriceUnit"
+        },
+        "number": {
+          "type": "number",
+          "format": "double"
+        },
+        "uploaded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1Product": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "price": {
+          "$ref": "#/definitions/ProductPrice"
+        }
+      }
+    },
+    "v1ProductRequest": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "string"
+        },
+        "product": {
+          "$ref": "#/definitions/v1Product"
+        }
+      }
+    },
+    "v1ProductResponse": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "v1Products": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Product"
+          }
+        }
+      }
+    }
+  }
+}
